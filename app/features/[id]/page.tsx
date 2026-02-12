@@ -1,15 +1,30 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { getFeatureById, getStatusLabel, getStatusColor, getCategoryLabel } from '@/lib/features';
+import { getFeatureById, getStatusLabel, getStatusColor, getCategoryLabel, features } from '@/lib/features';
 import { getFeatureDetails } from '@/lib/featureDetails';
 
-export default function FeatureDetailPage({ params }: { params: { id: string } }) {
-  const feature = getFeatureById(params.id);
-  const details = feature ? getFeatureDetails(params.id) : undefined;
+export async function generateStaticParams() {
+  return features.map((feature) => ({
+    id: feature.id,
+  }));
+}
 
+export default async function FeatureDetailPage({ 
+  params 
+}: { 
+  params: Promise<{ id: string }>
+}) {
+  // In Next.js 16, params is always a Promise - await it first
+  const paramsResolved = await params;
+  const id = paramsResolved.id;
+  
+  const feature = getFeatureById(id);
+  
   if (!feature) {
     notFound();
   }
+  
+  const details = getFeatureDetails(id);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
