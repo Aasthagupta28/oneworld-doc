@@ -1,5 +1,8 @@
 import { Feature, FeatureStatus, FeatureCategory } from './types';
 
+// Re-export types for convenience
+export type { FeatureStatus, FeatureCategory };
+
 export const features: Feature[] = [
   {
     id: 'department-management',
